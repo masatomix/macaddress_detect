@@ -1,0 +1,13 @@
+[Unit]
+Description=MacAddress Detect Program
+After=syslog.target network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/node index.js
+WorkingDirectory=/home/pi/app/macaddress_detect/
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
