@@ -1,0 +1,10 @@
+{
+  "appenders": [
+    {
+      "type": "file",
+      "category": "main",
+      "filename": "./logs/console.log",
+      "pattern": "-yyyy-MM-dd"
+    }
+  ]
+}

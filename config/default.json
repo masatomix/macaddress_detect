@@ -1,0 +1,18 @@
+{
+  "iot": {
+    "buttons": {
+      "001": {
+        "mac_addresses": ["xx:xx:xx:xx:xx:xx"],
+        "bot_url": "/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx",
+        "message": "xxxxx",
+        "channel": "#general"
+      },
+      "002": {
+        "mac_addresses": ["xx:xx:xx:xx:xx:xx"],
+        "bot_url": "/yyyyyyyyx/yyyyyyyyx/yyyyyyyyyyyyyyyyyyyyyyyy",
+        "message": "yyyyx",
+        "channel": "#general"
+      }
+    }
+  }
+}

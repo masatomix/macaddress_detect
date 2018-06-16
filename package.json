@@ -1,0 +1,26 @@
+{
+  "name": "macaddress-detect",
+  "version": "0.9.0",
+  "description": "MacAddress Detect Program",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masatomix/macaddress_detect.git"
+  },
+  "author": "Masatomi KINO",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/masatomix/macaddress_detect/issues"
+  },
+  "homepage": "https://github.com/masatomix/macaddress_detect#readme",
+  "dependencies": {
+    "config": "^1.30.0",
+    "dash-button": "^3.2.0",
+    "log4js": "^1.1.1",
+    "moment": "^2.22.2",
+    "request": "^2.87.0"
+  }
+}
