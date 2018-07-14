@@ -11,8 +11,8 @@ RUN apt install -y vim
 
 
 # libpcap インストール
-RUN apt-get install -y build-essential
-RUN apt-get install -y libpcap-dev
+RUN apt install -y build-essential
+RUN apt install -y libpcap-dev
 
 ARG user="macaddress_detect"
 ARG homeDir="/home/${user}"
@@ -29,6 +29,7 @@ RUN mv macaddress_detect/* ./
 #USER ${user}
 
 WORKDIR ${homeDir}
+# Dockerに入れる場合は、eth0なので置換
 RUN sed -i -e 's/const interfacee = "wlan0";/const interfacee = "eth0";/g' ./index.js
 COPY ./config/local.json config/
 
