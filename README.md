@@ -6,7 +6,8 @@ DHCPなどに対して流されたMac Addressを検知して、登録されて�
 ## インストール
 
 ```
-$ sudo apt-get install libpcap-dev
+$ sudo apt-get install -y build-essential
+$ sudo apt-get install -y libpcap-dev
 $ git clone https://github.com/masatomix/macaddress_detect.git
 $ cd macaddress_detect
 $ npm install
@@ -52,4 +53,14 @@ $ sudo systemctl start  macaddress-detect
 
 ```
 $ sudo journalctl  -f -u macaddress-detect
+```
+
+## Dockerを使う場合、
+
+```
+docker build -t macaddress_detect .
+docker run --net=host -d \
+ -v ${PWD}/logs:/home/macaddress_detec/logs \
+ --name macaddress_detect \
+ macaddress_detect
 ```
