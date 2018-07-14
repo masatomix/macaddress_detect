@@ -60,7 +60,8 @@ $ sudo journalctl  -f -u macaddress-detect
 ```
 $ docker build -t macaddress_detect .
 $ docker run --net=host -d \
- -v ${PWD}/logs:/home/macaddress_detec/logs \
+ -v ${PWD}/logs:/home/macaddress_detect/logs \
  --name macaddress_detect \
+ -v /etc/localtime:/etc/localtime:ro \
  macaddress_detect
 ```
