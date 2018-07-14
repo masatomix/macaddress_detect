@@ -54,3 +54,13 @@ $ sudo systemctl start  macaddress-detect
 ```
 $ sudo journalctl  -f -u macaddress-detect
 ```
+
+## Dockerを使う場合、
+
+```
+docker build -t macaddress_detect .
+docker run --net=host -d \
+ -v ${PWD}/logs:/home/macaddress_detec/logs \
+ --name macaddress_detect \
+ macaddress_detect
+```
