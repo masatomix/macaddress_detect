@@ -6,6 +6,8 @@ DHCPなどに対して流されたMac Addressを検知して、登録されて�
 ## インストール
 
 ```
+$ node --version
+v8.11.3   // じゃないとダメっぽい。
 $ sudo apt-get install -y build-essential
 $ sudo apt-get install -y libpcap-dev
 $ git clone https://github.com/masatomix/macaddress_detect.git
@@ -60,23 +62,12 @@ $ sudo journalctl  -f -u macaddress-detect
 ```
 $ git clone https://github.com/masatomix/macaddress_detect.git
 $ cd macaddress_detect
-$ docker build -t macaddress_detect .
-$ docker run --net=host -d \
- -v ${PWD}/logs:/home/macaddress_detect/logs \
- --name macaddress_detect \
- -v /etc/localtime:/etc/localtime:ro \
- macaddress_detect
-```
-
-docker run のコマンドは、もしくは、
-
-```
-$ docker run --net=host -d \
- -v ${PWD}/config:/home/macaddress_detect/config \
- -v ${PWD}/logs:/home/macaddress_detect/logs \
- --name macaddress_detect \
- -v /etc/localtime:/etc/localtime:ro \
- macaddress_detect
+$ sudo docker-compose up -d --build
 ```
 
 などで。。。
+
+
+## 改訂履歴
+
+- 0.9.5 docker-compose 追加
