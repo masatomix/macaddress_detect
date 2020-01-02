@@ -9,6 +9,7 @@ const logger = require('./logger');
 
 const iot_config = config.iot;
 const buttons_config = iot_config.buttons;
+const settings = config.settings;
 
 
 module.exports.execute = () => {
@@ -30,7 +31,8 @@ module.exports.execute = () => {
     const Packets = require('./node_modules/dash-button/build/Packets.js');
 
     const pcap = require('pcap');
-    const interfacee = "wlan0";
+    const interfacee = settings.nic;
+    console.log(interfacee)
     const pcap_session = Packets.createCaptureSession(interfacee);
 
 
