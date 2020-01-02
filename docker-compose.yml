@@ -1,0 +1,10 @@
+version: '2'
+services:
+  macaddress_detect:
+    build: ./
+    network_mode: "host"
+    volumes:
+      - ./logs:/home/macaddress_detect/logs
+      - ./config:/home/macaddress_detect/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
