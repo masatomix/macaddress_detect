@@ -1,21 +1,18 @@
 {
-  "iot": {
-    "buttons": {
-      "001": {
-        "mac_addresses": ["xx:xx:xx:xx:xx:xx"],
-        "bot_url": "/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx",
-        "message": "xxxxx",
-        "channel": "#general"
-      },
-      "002": {
-        "mac_addresses": ["xx:xx:xx:xx:xx:xx"],
-        "bot_url": "/yyyyyyyyx/yyyyyyyyx/yyyyyyyyyyyyyyyyyyyyyyyy",
-        "message": "yyyyx",
-        "channel": "#general"
-      }
-    }
-  },
   "settings":{
     "nic":"wlan0"
+  },
+  "firebaseConfig":{
+    "apiKey": "xx",
+    "authDomain": "xx",
+    "databaseURL": "xx",
+    "projectId": "xx",
+    "storageBucket": "xx",
+    "messagingSenderId": "xx",
+    "appId": "xx"
+  },
+  "userInfo":{
+    "userId":"xx@example.com",
+    "password":"passwd"
   }
 }
