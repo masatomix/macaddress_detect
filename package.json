@@ -1,7 +1,7 @@
 {
   "name": "macaddress-detect",
-  "version": "0.9.5",
-  "description": "MacAddress Detect Program",
+  "version": "1.0.0",
+  "description": "MacAddress Detect Service",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,6 +21,7 @@
     "dash-button": "^3.2.0",
     "log4js": "^1.1.1",
     "moment": "^2.22.2",
+    "firebase": "^7.2.0",
     "request": "^2.87.0"
   }
 }

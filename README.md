@@ -24,7 +24,19 @@ $ sudo node index.js
 config/default.json
 ```
 
-をご参照
+をご参照。また、Firestoreの ``/app_settings/macaddress_detect/buttons/{docId}`` に
+
+```
+{
+    "mac_addresses": ["xx:xx:xx:xx:xx:xx"],
+    "bot_url": "/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx",
+    "message": "xxxxx",
+    "channel": "#general"
+},
+```
+
+という情報を持つことで、該当するMacアドレスが見つかったとき、該当のSlackチャンネルへ通知を行います。
+
 
 ## サービス化したいばあい。
 
@@ -70,4 +82,5 @@ $ sudo docker-compose up -d --build
 
 ## 改訂履歴
 
+- 1.0.0 Macアドレスの情報をFirestore側に持つように変更。
 - 0.9.5 docker-compose 追加
