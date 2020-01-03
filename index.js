@@ -7,14 +7,22 @@ const moment = require('moment');
 const request = require('request');
 const logger = require('./logger');
 
-const iot_config = config.iot;
-const buttons_config = iot_config.buttons;
 const settings = config.settings;
+const userInfo = config.userInfo;
+const firebaseConfig = config.firebaseConfig;
 
+const firebase = require('firebase/app')
+require('firebase/firestore')
+require('firebase/auth')
+const firebaseApp = firebase.initializeApp(firebaseConfig)
 
-module.exports.execute = () => {
+module.exports.execute = async () => {
     logger.main.debug('MacAddressの検知を開始します...');
-    const buttons = {};
+    const nic = settings.nic;
+    console.log(`nic: ${nic}`)
+
+    const buttons_config  = await me.getButtonConfig()
+
     const options = {};
     for (let property in buttons_config) {
         const option = {
@@ -31,9 +39,7 @@ module.exports.execute = () => {
     const Packets = require('./node_modules/dash-button/build/Packets.js');
 
     const pcap = require('pcap');
-    const interfacee = settings.nic;
-    console.log(interfacee)
-    const pcap_session = Packets.createCaptureSession(interfacee);
+    const pcap_session = Packets.createCaptureSession(nic);
 
 
     const updateTimes = {};
@@ -115,6 +121,34 @@ module.exports.updateTimes = (updateTimes, sourceMacAddress, updateTime) => {
         return true;
     }
 };
+
+module.exports.getButtonConfig = async () => {
+    const result = await firebase
+      .auth()
+      .signInWithEmailAndPassword(userInfo.userId, userInfo.password)
+    const user = firebase.auth().currentUser
+    // console.log(`displayName: ${user.displayName}`)
+    // console.log(`email: ${user.email}`)
+    // console.log(`emailVerified: ${user.emailVerified}`)
+    // console.log(`uid: ${user.uid}`)
+
+    let buttons ={}
+  
+    try {
+      const db = firebaseApp.firestore()
+      const snapshot = await db.collection('app_settings/macaddress_detect/buttons').get()
+      snapshot.forEach(doc => {
+          let property = doc.id
+          let value = doc.data()
+          buttons[property]= value
+      })
+      console.log('デバイス情報:')
+      console.log(buttons)
+    } catch (err) {
+      console.log('Error getting documents', err)
+    }
+    return buttons
+  }
 
 
 if (!module.parent) {
