@@ -43,14 +43,15 @@ module.exports.execute = async () => {
 
 
     const updateTimes = {};
+    const updateTimesForUnknown = {};
     pcap_session.addListener('packet', (rawPacket) => {
         const packet = pcap.decode(rawPacket);
         const sourceMacAddress = MacAddresses.getEthernetSource(packet);
         let flag = false;
 
+        const now = moment();
         for (let property in buttons_config) {
             if (buttons_config[property].mac_addresses.indexOf(sourceMacAddress) >= 0) {
-                const now = moment();
                 const nowStr = now.format("YYYY/MM/DD HH:mm:ss");
 
                 console.log('登録されたMACアドレスが検出されました:[%s]: %s: %s', property, sourceMacAddress, nowStr);
@@ -58,7 +59,7 @@ module.exports.execute = async () => {
                 flag = true;
 
 
-                const updateFlag = me.updateTimes(updateTimes, sourceMacAddress, now);
+                const updateFlag = me.updateTimes(updateTimes, sourceMacAddress, now,10);
 
                 if (updateFlag) {
                     request(options[property], function (error, response, body) {
@@ -75,6 +76,23 @@ module.exports.execute = async () => {
             const nowStr = now.format("YYYY/MM/DD HH:mm:ss");
             console.log('登録されていないMACアドレスが検出されました: %s: %s', sourceMacAddress, nowStr);
             logger.main.info('登録されていないMACアドレスが検出されました: %s: %s', sourceMacAddress, nowStr);
+
+            const updateFlag = me.updateTimes(updateTimesForUnknown, sourceMacAddress, now,30);
+            if (updateFlag) {
+                const option = {
+                    url:
+                      'https://hooks.slack.com/services' +
+                      settings.unknown_url,
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    json: { text: `unknownなデバイスです:${sourceMacAddress}`, channel: '#other' },
+                  }
+                  request(option, function(error, response, body) {
+                    if (!error) {
+                      console.log(body)
+                    }
+                  })
+            }
         }
     });
 };
@@ -84,9 +102,10 @@ module.exports.execute = async () => {
 // updateTimes 更新時間のリスト
 // sourceMacAddress 変更対象のMacアドレス
 // updateTime 更新時間
-module.exports.updateTimes = (updateTimes, sourceMacAddress, updateTime) => {
+// interval 前回より xx 分間は、再度通知はしない
+module.exports.updateTimes = (updateTimes, sourceMacAddress, updateTime,interval) => {
 
-    const interval = 10;
+    // const interval = 10;
 
     // updateTimes リストに存在しない場合は、追加してtrueを返す
     // 存在する場合は、経過時間をみて、必要に応じて更新してtrueやfalseを返す。
