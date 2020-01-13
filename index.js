@@ -24,6 +24,7 @@ module.exports.execute = async () => {
     const buttons_config  = await me.getButtonConfig()
 
     const options = {};
+    const other_options = {};
     for (let property in buttons_config) {
         const option = {
             url: 'https://hooks.slack.com/services' + buttons_config[property].bot_url,
@@ -31,8 +32,13 @@ module.exports.execute = async () => {
             headers: {'Content-Type': 'application/json'},
             json: {"text": buttons_config[property].message, "channel": buttons_config[property].channel}
         };
-        // buttons[property] = button;
         options[property] = option;
+
+        const other_option = {
+            notify_flag :buttons_config[property].notify_flag
+        };
+        other_options[property] = other_option;
+
     }
 
     const MacAddresses = require('./node_modules/dash-button/build/MacAddresses.js');
@@ -61,7 +67,7 @@ module.exports.execute = async () => {
 
                 const updateFlag = me.updateTimes(updateTimes, sourceMacAddress, now,10);
 
-                if (updateFlag) {
+                if (updateFlag && other_options[property].notify_flag) {
                     request(options[property], function (error, response, body) {
                         if (!error) {
                             console.log(body);
@@ -71,7 +77,7 @@ module.exports.execute = async () => {
                 break;
             }
         }
-        if (!flag) {
+        if (!flag) { // 検出されたアドレスは登録にはなかった
             const now = moment();
             const nowStr = now.format("YYYY/MM/DD HH:mm:ss");
             console.log('登録されていないMACアドレスが検出されました: %s: %s', sourceMacAddress, nowStr);
