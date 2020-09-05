@@ -85,19 +85,34 @@ module.exports.execute = async () => {
 
             const updateFlag = me.updateTimes(updateTimesForUnknown, sourceMacAddress, now,30);
             if (updateFlag) {
-                const option = {
-                    url:
-                      'https://hooks.slack.com/services' +
-                      settings.unknown_url,
+                // const option = {
+                //     url:
+                //       'https://hooks.slack.com/services' +
+                //       settings.unknown_url,
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     json: { text: `unknownなデバイスです:${sourceMacAddress}`, channel: '#other' },
+                //   }
+                //   request(option, function(error, response, body) {
+                //     if (!error) {
+                //       console.log(body)
+                //     }
+                //   })
+                const optionEla = {
+                    url:'http://192.168.10.200:9202/home_event/_doc',
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    json: { text: `unknownなデバイスです:${sourceMacAddress}`, channel: '#other' },
+                    json:  {
+                        "date": new Date(),
+                        "action":  'unknownなデバイスを検知',
+                        "macAddress":  sourceMacAddress
+                        }
                   }
-                  request(option, function(error, response, body) {
+                  request(optionEla, function(error, response, body) {
                     if (!error) {
                       console.log(body)
                     }
-                  })
+                  })   
             }
         }
     });
