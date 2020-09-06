@@ -70,6 +70,7 @@ module.exports.execute = async () => {
               console.log(body)
             }
           })
+          me.postLog(settings, sourceMacAddress, '既知のデバイスを検知', buttons_config[property].message)
         }
         break
       }
@@ -84,8 +85,29 @@ module.exports.execute = async () => {
       const updateFlag = me.updateTimes(updateTimesForUnknown, sourceMacAddress, now, 30)
       if (updateFlag) {
         // me.postUnKnownToSlack(settings, sourceMacAddress)
-        me.postUnKnownToLog(settings, sourceMacAddress)
+        me.postLog(settings, sourceMacAddress, 'unknownなデバイスを検知','')
       }
+    }
+  })
+}
+
+module.exports.postLog = (settings, sourceMacAddress, action, message) => {
+  console.log(sourceMacAddress)
+  console.log(message)
+  const optionEla = {
+    url: settings.elastic_url,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    json: {
+      date: new Date(),
+      action: action,
+      message: message,
+      macAddress: sourceMacAddress,
+    },
+  }
+  request(optionEla, function (error, response, body) {
+    if (!error) {
+      console.log(body)
     }
   })
 }
@@ -98,24 +120,6 @@ module.exports.postUnKnownToSlack = (settings, sourceMacAddress) => {
     json: { text: `unknownなデバイスです:${sourceMacAddress}`, channel: '#other' },
   }
   request(option, function (error, response, body) {
-    if (!error) {
-      console.log(body)
-    }
-  })
-}
-
-module.exports.postUnKnownToLog = (settings, sourceMacAddress) => {
-  const optionEla = {
-    url: settings.elastic_url,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    json: {
-      date: new Date(),
-      action: 'unknownなデバイスを検知',
-      macAddress: sourceMacAddress,
-    },
-  }
-  request(optionEla, function (error, response, body) {
     if (!error) {
       console.log(body)
     }
