@@ -1,6 +1,7 @@
 {
   "settings":{
-    "nic":"wlan0"
+    "nic":"wlan0",
+    "unknown_url":"/xx/xx/xx"
   },
   "firebaseConfig":{
     "apiKey": "xx",

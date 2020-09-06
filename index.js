@@ -24,6 +24,7 @@ module.exports.execute = async () => {
     const buttons_config  = await me.getButtonConfig()
 
     const options = {};
+    const other_options = {};
     for (let property in buttons_config) {
         const option = {
             url: 'https://hooks.slack.com/services' + buttons_config[property].bot_url,
@@ -31,8 +32,13 @@ module.exports.execute = async () => {
             headers: {'Content-Type': 'application/json'},
             json: {"text": buttons_config[property].message, "channel": buttons_config[property].channel}
         };
-        // buttons[property] = button;
         options[property] = option;
+
+        const other_option = {
+            notify_flag :buttons_config[property].notify_flag
+        };
+        other_options[property] = other_option;
+
     }
 
     const MacAddresses = require('./node_modules/dash-button/build/MacAddresses.js');
@@ -43,14 +49,15 @@ module.exports.execute = async () => {
 
 
     const updateTimes = {};
+    const updateTimesForUnknown = {};
     pcap_session.addListener('packet', (rawPacket) => {
         const packet = pcap.decode(rawPacket);
         const sourceMacAddress = MacAddresses.getEthernetSource(packet);
         let flag = false;
 
+        const now = moment();
         for (let property in buttons_config) {
             if (buttons_config[property].mac_addresses.indexOf(sourceMacAddress) >= 0) {
-                const now = moment();
                 const nowStr = now.format("YYYY/MM/DD HH:mm:ss");
 
                 console.log('登録されたMACアドレスが検出されました:[%s]: %s: %s', property, sourceMacAddress, nowStr);
@@ -58,9 +65,9 @@ module.exports.execute = async () => {
                 flag = true;
 
 
-                const updateFlag = me.updateTimes(updateTimes, sourceMacAddress, now);
+                const updateFlag = me.updateTimes(updateTimes, sourceMacAddress, now,10);
 
-                if (updateFlag) {
+                if (updateFlag && other_options[property].notify_flag) {
                     request(options[property], function (error, response, body) {
                         if (!error) {
                             console.log(body);
@@ -70,11 +77,43 @@ module.exports.execute = async () => {
                 break;
             }
         }
-        if (!flag) {
+        if (!flag) { // 検出されたアドレスは登録にはなかった
             const now = moment();
             const nowStr = now.format("YYYY/MM/DD HH:mm:ss");
             console.log('登録されていないMACアドレスが検出されました: %s: %s', sourceMacAddress, nowStr);
             logger.main.info('登録されていないMACアドレスが検出されました: %s: %s', sourceMacAddress, nowStr);
+
+            const updateFlag = me.updateTimes(updateTimesForUnknown, sourceMacAddress, now,30);
+            if (updateFlag) {
+                // const option = {
+                //     url:
+                //       'https://hooks.slack.com/services' +
+                //       settings.unknown_url,
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     json: { text: `unknownなデバイスです:${sourceMacAddress}`, channel: '#other' },
+                //   }
+                //   request(option, function(error, response, body) {
+                //     if (!error) {
+                //       console.log(body)
+                //     }
+                //   })
+                const optionEla = {
+                    url:'http://192.168.10.200:9202/home_event/_doc',
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    json:  {
+                        "date": new Date(),
+                        "action":  'unknownなデバイスを検知',
+                        "macAddress":  sourceMacAddress
+                        }
+                  }
+                  request(optionEla, function(error, response, body) {
+                    if (!error) {
+                      console.log(body)
+                    }
+                  })   
+            }
         }
     });
 };
@@ -84,9 +123,10 @@ module.exports.execute = async () => {
 // updateTimes 更新時間のリスト
 // sourceMacAddress 変更対象のMacアドレス
 // updateTime 更新時間
-module.exports.updateTimes = (updateTimes, sourceMacAddress, updateTime) => {
+// interval 前回より xx 分間は、再度通知はしない
+module.exports.updateTimes = (updateTimes, sourceMacAddress, updateTime,interval) => {
 
-    const interval = 10;
+    // const interval = 10;
 
     // updateTimes リストに存在しない場合は、追加してtrueを返す
     // 存在する場合は、経過時間をみて、必要に応じて更新してtrueやfalseを返す。
