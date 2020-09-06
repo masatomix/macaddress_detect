@@ -83,7 +83,7 @@ module.exports.execute = async () => {
 
       const updateFlag = me.updateTimes(updateTimesForUnknown, sourceMacAddress, now, 30)
       if (updateFlag) {
-        me.postUnKnownToSlack(settings, sourceMacAddress)
+        // me.postUnKnownToSlack(settings, sourceMacAddress)
         me.postUnKnownToLog(settings, sourceMacAddress)
       }
     }
