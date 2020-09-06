@@ -7,7 +7,7 @@ DHCPなどに対して流されたMac Addressを検知して、登録されて�
 
 ```
 $ node --version
-v8.11.3   // じゃないとダメっぽい。
+v8.13.0   // 8系じゃないとダメっぽい。
 $ sudo apt-get install -y build-essential
 $ sudo apt-get install -y libpcap-dev
 $ git clone https://github.com/masatomix/macaddress_detect.git
@@ -31,11 +31,13 @@ config/default.json
     "mac_addresses": ["xx:xx:xx:xx:xx:xx"],
     "bot_url": "/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx",
     "message": "xxxxx",
-    "channel": "#general"
+    "channel": "#general",
+    "notify_flag": true,
+
 },
 ```
 
-という情報を持つことで、該当するMacアドレスが見つかったとき、該当のSlackチャンネルへ通知を行います。
+という情報を持つことで、該当するMacアドレスが見つかったとき、該当のSlackチャンネルへ通知を行います。(``docId``は任意)
 
 
 ## サービス化したいばあい。
@@ -74,6 +76,7 @@ $ sudo journalctl  -f -u macaddress-detect
 ```
 $ git clone https://github.com/masatomix/macaddress_detect.git
 $ cd macaddress_detect
+$ // config/default.json を修正して、、、
 $ sudo docker-compose up -d --build
 ```
 
@@ -81,6 +84,6 @@ $ sudo docker-compose up -d --build
 
 
 ## 改訂履歴
-
+- 1.0.1 Elasticsearchにも送るように修正
 - 1.0.0 Macアドレスの情報をFirestore側に持つように変更。
 - 0.9.5 docker-compose 追加
