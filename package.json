@@ -1,6 +1,6 @@
 {
   "name": "macaddress-detect",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MacAddress Detect Service",
   "main": "index.js",
   "scripts": {
